@@ -1,5 +1,5 @@
 Package: prenomfrance
-Title: Outils
+Title: Prenoms de France
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Régis",
@@ -8,10 +8,12 @@ Authors@R:
              email = "regis.relland@insee.fr"),
       person(family = "Institut national de la statistique et des études économiques",
              role = "cph"))
-Description: Mes outils pour utiliser R.
+Description: Les prénoms en France
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Language: fr
+Depends: 
+    R (>= 2.10)
