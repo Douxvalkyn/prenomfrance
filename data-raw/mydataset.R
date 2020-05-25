@@ -18,9 +18,10 @@ file.create("R/data.R")
 # Data import and processing pipeline
 
 nat2018_fichier_initial <- read.csv("data-raw/nat2018.csv", sep=";", encoding = "UTF-8")
+dpt2018_fichier_initial <- read.csv("data-raw/dpt2018.csv", sep=";", encoding = "UTF-8")
 prenoms_fichier_initial <- read.csv("data-raw/Prenoms.csv", sep=";")
 load("data-raw/base.RData")
 
-usethis::use_data(nat2018_fichier_initial, prenoms_fichier_initial,base, overwrite = T)
+usethis::use_data(dpt2018_fichier_initial,nat2018_fichier_initial, prenoms_fichier_initial,base, overwrite = T)
 
 
