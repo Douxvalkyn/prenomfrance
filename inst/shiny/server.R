@@ -10,7 +10,7 @@ output$plot <- plotly::renderPlotly({
     y<-dplyr::select(table_nat, ethnie) %>%  unlist() %>% as.vector %>%  as.numeric %>%  round(2)
 
     g <-  ggplot2::ggplot(table_nat, ggplot2::aes(x=annee))+
-            ggplot2::geom_point(ggplot2::aes(y=y), size=1, shape=20, color="blue") +
+            ggplot2::geom_point(ggplot2::aes(y=y), size=1, shape=20, color="cornflowerblue") +
             ggplot2::ggtitle("Evolution de la proportion d'enfants selon l'origine du prénom") +
             ggplot2::xlab("Années") +
             ggplot2::ylab("Proportion de bébés")+
@@ -174,16 +174,62 @@ output$mymap2 <- leaflet::renderLeaflet({
       leaflet::setView( 2, 46.6,6)
 
 })
+####------------------- PLOT concentration des prénoms---------------------------------------------------
+
+output$plot2 <- plotly::renderPlotly({
 
 
+annees <- unique(base_nat$annais) %>%  as.vector %>% unlist() %>%  sort()
+annees <- annees[annees != "XXXX"]
 
-####---------------------------------------------------------------------------------------------
-# gestion ui dynamique (radio bouton)
+result=NULL
+i=1
+for (an in annees){
+  base_an <- base_nat %>% dplyr::filter( annais==!!an) %>%  dplyr::filter(prenom != "_PRENOMS_RARES")
+  x <-sort(base_an$nombre, decreasing = T)
+  h2 <- cumsum(x*100/sum(x))
+
+result[i] <- length(h2[h2<90])
+i=i+1
+}
+
+
+concentration <- cbind(annees, result) %>%  as.data.frame()
+concentration$result <-as.numeric(as.vector(concentration$result))
+
+# graphique ggplot
+g <- ggplot2::ggplot(concentration, ggplot2::aes(x=annees))+
+  ggplot2::geom_point(ggplot2::aes(y=result),size=1, shape=20, color="darkolivegreen3") +
+  ggplot2::ggtitle("Nombre de prénoms pour représenter 90% des enfants") +
+  ggplot2::xlab("Années") +
+  ggplot2::ylab("nb prenoms") + ggplot2::ylim(0, 3500) +
+  ggplot2::scale_x_discrete(breaks=c("1900", "1925", "1950", "1975",  "2000")) +
+  ggplot2::theme(plot.title = ggplot2::element_text(size=10))
+
+
+h <- plotly::ggplotly(g) %>% plotly::config(displayModeBar = F) # pour cacher la barre de menu plotly
+
+return (h)
+})
+
+####----------------------Gestion UI dynamiques--------------------------------------------------------
+
+# gestion ui dynamique (radio bouton 1)
     output$ui <- renderUI({
       switch(
         input$radio,
         "1" = leaflet::leafletOutput(outputId = "mymap", height="700px"),
         "2" = leaflet::leafletOutput(outputId = "mymap2", height="700px")
+      )
+
+    })
+
+ # gestion ui dynamique (radio bouton 2)
+    output$ui2 <- renderUI({
+      switch(
+        input$radio2,
+        "1" = plotly::plotlyOutput("plot", height="80%"),
+        "2" = plotly::plotlyOutput("plot2", height="80%")
       )
 
     })
