@@ -3,11 +3,11 @@
 shinyUI(fluidPage(title="Prenoms en France",
 
 
-    # div(class="outer",
-    #     tags$head(
-    #         # Include our custom CSS
-    #         includeCSS("www/style.css")
-    #     ),
+
+navbarPage("",
+    tabPanel("Main",
+
+
 
     fluidRow(
     column(7, div(style = "height:650px;",
@@ -16,7 +16,7 @@ shinyUI(fluidPage(title="Prenoms en France",
    )),
 
 
-        column(5, div(style = "height:650px;",
+    column(5, div(style = "height:650px;",
 
 fluidRow(
   column(5,     selectInput(inputId="select_origine", label = "Origine",
@@ -36,15 +36,45 @@ br(),
 
 fluidRow( uiOutput("ui2"))# affichage des PLOT (selon choix du bouton radio2)
 
-
-
-       )
-
-        )
-
-
-
-)# fin fluidrow
 ))
-#)
+) #fin fluidrow tabpanel1
+) # fin tabpanel1"
+,
+
+
+tabPanel("Popularité",
+fluidRow(
+    column(4,
+         selectInput("wordcloud_origine",label="Origine",
+                     choices=c(Choix='', levels(factor(colnames(table_dep)[c(-1,-2)]))), selectize=FALSE),
+         sliderInput("wordcloud_annees", label="Annees", min = 1900, max = 2018, value=c(1900,2018))
+         ),
+   column(8,
+         wordcloud2Output("wordcloud", width = "90%"),
+         fluidRow( column(6,tableOutput("top_h")),column(6,tableOutput("top_f")))
+   )
+
+
+) # fin fluid row du tabpanel2
+)# fin tabpanel 2
+,
+
+tabPanel("Réseau",
+         column(3,
+                textInput("prenom_graphe", label = "Choix prénom", value="tom"),
+                sliderInput("seuil_graphe", label="seuil de proximité", min=0, max=0.25,value=0.15, step=0.05),
+                sliderInput("annees_graphe", label="Années", min=1900, max=2018,value=c(1970,2018))
+                ),
+         column(9,  visNetworkOutput("network", height = "750px",width="100%" ))
+)# fin tabpanel3
+
+
+
+
+) # fin navBar
+) # fin fluidPage
+) # fin shinyUI
+
+
+
 

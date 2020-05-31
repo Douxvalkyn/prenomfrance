@@ -212,6 +212,65 @@ h <- plotly::ggplotly(g) %>% plotly::config(displayModeBar = F) # pour cacher la
 return (h)
 })
 
+
+####-------------------- Top prenoms ---------------------------------------------------------
+
+library(wordcloud2)
+
+# base qui sert au wordcloud et aux top prenoms
+b <- reactive({
+
+  origine <-input$wordcloud_origine
+  annee <-input$wordcloud_annees
+
+  b<-base_nat %>%
+    dplyr::filter( as.vector(annais)>=!!annee[1]) %>%
+    dplyr::filter( as.vector(annais)<=!!annee[2])
+
+  # trier selon l'origine si une origine est sélectionnée
+  if (origine !=""){
+    b<- b %>%   dplyr::filter(stringr::str_detect(origine, !!origine))
+  }
+
+
+  b <- b %>% dplyr::group_by(sexe,prenom) %>%
+    dplyr::summarise(nb=sum(nombre)) %>%
+    dplyr::filter(prenom != "_PRENOMS_RARES") %>% dplyr::arrange(desc(nb))
+
+  # enlever les prenoms trop rares
+  b <- b %>% dplyr::filter(nb>10)
+})
+
+
+
+
+
+# afficher top hommes
+output$top_h <- renderTable({
+ b<- b()
+b <- b %>%  dplyr::filter(sexe=="1") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
+  head(b, n=10)
+})
+
+
+# afficher top femmes
+output$top_f <- renderTable({
+  b<- b()
+b <- b %>%  dplyr::filter(sexe=="2") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
+  head(b, n=10)
+})
+
+
+
+output$wordcloud <-renderWordcloud2({
+b<- b()
+b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
+
+ wordcloud2a(b, size=0.5, shape = "circle")
+
+})
+
+
 ####----------------------Gestion UI dynamiques--------------------------------------------------------
 
 # gestion ui dynamique (radio bouton 1)
@@ -226,6 +285,7 @@ return (h)
 
  # gestion ui dynamique (radio bouton 2)
     output$ui2 <- renderUI({
+        print(input$id)
       switch(
         input$radio2,
         "1" = plotly::plotlyOutput("plot", height="80%"),
@@ -233,5 +293,116 @@ return (h)
       )
 
     })
+
+####---------------------- Graphe relationnel -------------------------------------------
+
+   output$network <- renderVisNetwork({
+
+     req(input$prenom_graphe)
+
+     ### Variables en entrée et base de recherche
+     annee=input$annees_graphe
+     seuil_graphe <- input$seuil_graphe
+
+     base_an <- base_nat %>%
+        dplyr::filter(nombre > 9) %>% # minimum 10 occurences par an
+        dplyr::filter( as.vector(annais)>=!!annee[1]) %>%    # filtre sur les années
+        dplyr::filter( as.vector(annais)<=!!annee[2])        # filtre sur les années
+
+     base <- base_an  %>%
+        dplyr::group_by (prenom,origine) %>%
+        dplyr::summarise(nb=sum(nombre)) %>%
+        dplyr::ungroup() %>%
+        dplyr::filter(nb>49) #minimum 50 occurences sur la période
+
+      prenoms_all <- na.omit(base$prenom) %>% as.vector() # tous les prenoms pour faire la recherche
+      prenom <- stringr::str_to_upper(input$prenom_graphe)
+
+
+     ### Detection des prenoms proches avec la distance de Jaro Winkler
+
+      # NIV 1: on ne fait la recherche que si le prenom cherché est dans la base
+      if (length(base$prenom[base$prenom == prenom])>0){
+        liste <- recherche_prenoms_proches(prenom, seuil_graphe, prenoms_all)
+        a=unlist(liste[1])
+        b=unlist(liste[2])
+        c=unlist(liste[3])
+
+
+      # NIV 2: on recherche les prenoms proches de tous les prenoms proches du prenom d'interet
+       for (name in unlist(liste[1])){
+         liste2 <- recherche_prenoms_proches(name, seuil_graphe, prenoms_all)
+         a=append (a, unlist(liste2[1]))
+         b=append (b, unlist(liste2[2]))
+         c=append (c, unlist(liste2[3]))
+        }
+
+
+      ### Creation du reseau relationnel uniquement si des prenoms proches ont été trouvées
+      if (length(liste[1])>0 & !(is.null(unlist(liste[1])))){
+
+
+      # necessite nodes (liste des noeuds) et links (liste des liens)
+      source=rep(prenom, length(unlist(liste[1])))
+      for (i in 1:length(c)-1){
+        source=append(source, rep( unlist( liste[1])[i], c[i+1]))
+      }
+      target=a
+      links=cbind(source, target, b) %>%  as.data.frame() %>%  dplyr::rename(weight=b)
+      links$weight= as.numeric(as.vector(links$weight))
+      id =unique(c(prenom,a))
+      nodes = id %>%  as.data.frame()
+
+
+      # construction du reseau avec igraph
+      reseau <- igraph::graph_from_data_frame(d=links, vertices=nodes, directed=F)
+      reseau <- igraph::simplify(reseau) # suppression des liens multiples
+      # plot(reseau)
+
+
+      # utilisation de VisNetwork pour afficher un graphe dynamique interactif
+      data <- toVisNetworkData(reseau)
+
+      # recherche des valeurs (nb d'occurences des prenoms) des noeuds
+      values=NULL
+       for (name in data$nodes$id){
+        values= append(values,base$nb[base$prenom==name])
+       }
+
+      # recherche des origines  des noeuds: à revoir pour que si origine=arabic, african,
+      # les prenoms proches african ou arabic sont classés comme meme origine
+      origines=NULL
+      for (name in data$nodes$id){
+        if (is.na(base$origine[base$prenom==name])){
+          origines=append(origines,"NA")
+        } else{
+         origine_cible = stringr:: str_extract_all(base$origine[base$prenom==prenom], stringr::boundary("word")) %>%  unlist()
+         flag=FALSE
+         for (orig in origine_cible){
+         if ( ( stringr::str_detect(base$origine[base$prenom==name], orig)) & (!(flag)) ){
+           origines=append(origines, stringr::str_c(stringr::str_replace_na(origine_cible), collapse = " "))
+           flag=TRUE
+         }
+        }
+         if (!(flag)){ origines=append(origines, "autre origine")}
+        }
+      }
+
+
+
+      # on renseigne les valeurs, origines, titres des noeuds et longueur des liens
+      data$nodes$value= values
+      data$nodes$group= origines
+      data$nodes$title=values
+      data$edges$length=data$edges$weight
+
+
+      #affichage dynamique
+      visNetwork(nodes = data$nodes, edges = data$edges, height = "750px", width="100%") %>%
+        visLegend(width=0.2, position = "right")
+      }
+}# If PRENOM EXISTE
+    })
+
 
 })
