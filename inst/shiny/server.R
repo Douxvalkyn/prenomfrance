@@ -35,7 +35,8 @@ map <- reactive({
   # on supprime les 2 dep corses et on remet la corse unifiée
   map_dep_ <- map_dep %>%  dplyr::filter (!(codgeo %in% c("2A", "2B"))) %>%  rbind(corse_)
   map_dep_4326 <-sf::st_transform(map_dep_, 4326) %>% dplyr:: rename(CODGEO=codgeo)
-
+  map_dep_4326$CODGEO <- as.vector(map_dep_4326$CODGEO)
+  return(map_dep_4326)
 })
 
 
@@ -43,23 +44,16 @@ map <- reactive({
 
 output$mymap <- leaflet::renderLeaflet({
 
-
       ethnie=input$select_origine
       annee=input$year
       map_dep_4326 <-map()
-      # ethnie="african"
-      # annee="1940"
 
       # table_dep est sauvegarde dans data
       table_dep_filtre <- table_dep %>% dplyr::filter( annee==!!annee) %>%  dplyr::select (dep,ethnie) %>%
         dplyr::rename(CODGEO=dep, ethnie= ethnie)
-
+      table_dep_filtre$CODGEO <- as.vector(table_dep_filtre$CODGEO)
       map <- dplyr::left_join(map_dep_4326, table_dep_filtre, by="CODGEO")
-
       map$ethnie <- as.numeric(as.vector(map$ethnie))
-
-
-
 
      #gestion de la discretisation des classes et de la palette
 
@@ -72,13 +66,12 @@ output$mymap <- leaflet::renderLeaflet({
       }
 
 
-
-
       #label au survol
       labels <- sprintf(
         "<strong>Dep: %s</strong> <br/> %g &#37; ",
         map$CODGEO, round(map$ethnie ,2)
       ) %>% lapply(htmltools::HTML)
+
 
       #leaflet
       leaflet::leaflet(map) %>%
@@ -98,9 +91,9 @@ output$mymap <- leaflet::renderLeaflet({
             dashArray = "",
             fillOpacity = 0.7,
             bringToFront = TRUE))  %>%
-     leaflet::addLegend(pal = pal, values = ~density, opacity = 0.7, title = NULL,
+    leaflet::addLegend(pal = pal, values = ~ethnie, opacity = 0.7, title = NULL,
                   position = "topright") %>%
-        leaflet::setView( 2, 46.6,6)
+         leaflet::setView( 2, 46.6,6)
 
 
 
@@ -115,30 +108,29 @@ output$mymap2 <- leaflet::renderLeaflet({
     # calcul de la repartition par origine et par departement
     ethnie=input$select_origine
     annee=input$year
-    #   ethnie="serbian"
+    #   ethnie="basque"
     #   annee="1900"
 
     # base_dep est sauvegardé dans data
     base_an <- dplyr::filter(base_dep, annais==!!annee)
     base_an_ethnie <- base_an %>% dplyr::filter(stringr::str_detect(origine,ethnie))
     total_france <- base_an_ethnie  %>% dplyr::summarise(sum(nombre)) %>% unlist() %>%  as.numeric()
-    tab=base_an_ethnie %>%  dplyr::group_by(dpt) %>% dplyr::summarise(s=sum(nombre)) %>%
-      dplyr::mutate(pct= 100*s/total_france) %>% dplyr::rename (CODGEO=dpt)
-
+    suppressWarnings( tab <-base_an_ethnie %>%  dplyr::group_by(dpt) %>% dplyr::summarise(s=sum(nombre)) %>%
+      dplyr::mutate(pct= 100*s/total_france) %>% dplyr::rename (CODGEO=dpt))
+    tab$CODGEO <- as.vector(tab$CODGEO)
 
     map2 <- dplyr::left_join(map_dep_4326, tab, by="CODGEO")
 
-
-
+summary(base_an_ethnie$dpt)
     # attention si aucune valeur ou (une seule valeur et toutes les autres NA) : palette spéciale
     # sinon, discretisation JENKS
+
     if (length(na.omit(map2$pct)) <= 1) {
       pal <- leaflet::colorBin("YlOrRd", domain =  map2$pct, bins = c(0,1))   }
     if (length(na.omit(map2$pct)) > 1) {
-      classes<-classInt::classIntervals(map2$pct, 5, style="jenks")
+      suppressWarnings( classes<-classInt::classIntervals(na.omit(map2$pct), 5, style="jenks") )
       pal <-leaflet:: colorBin("YlOrRd", domain = map2$pct, bins =  unique(classes$brks))
     }
-
 
 
     #label au survol
@@ -169,7 +161,7 @@ output$mymap2 <- leaflet::renderLeaflet({
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE)) %>%
-      leaflet::addLegend(pal = pal, values = ~density, opacity = 0.7, title = NULL,
+      leaflet::addLegend(pal = pal, values = ~pct, opacity = 0.7, title = NULL,
                position = "topright") %>%
       leaflet::setView( 2, 46.6,6)
 
@@ -181,7 +173,7 @@ output$plot2 <- plotly::renderPlotly({
 
 annees <- unique(base_nat$annais) %>%  as.vector %>% unlist() %>%  sort()
 annees <- annees[annees != "XXXX"]
-
+print(9)
 result=NULL
 i=1
 for (an in annees){
@@ -192,7 +184,7 @@ for (an in annees){
 result[i] <- length(h2[h2<90])
 i=i+1
 }
-
+print(10)
 
 concentration <- cbind(annees, result) %>%  as.data.frame()
 concentration$result <-as.numeric(as.vector(concentration$result))
@@ -206,7 +198,7 @@ g <- ggplot2::ggplot(concentration, ggplot2::aes(x=annees))+
   ggplot2::scale_x_discrete(breaks=c("1900", "1925", "1950", "1975",  "2000")) +
   ggplot2::theme(plot.title = ggplot2::element_text(size=10))
 
-
+print(11)
 h <- plotly::ggplotly(g) %>% plotly::config(displayModeBar = F) # pour cacher la barre de menu plotly
 
 return (h)
@@ -248,25 +240,48 @@ b <- reactive({
 # afficher top hommes
 output$top_h <- renderTable({
  b<- b()
-b <- b %>%  dplyr::filter(sexe=="1") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
-  head(b, n=10)
+b <- b %>%  dplyr::filter(sexe=="1") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb) %>% dplyr::rename(Effectif=nb, Prenom=prenom)
+  head(b, 10)
 })
 
 
 # afficher top femmes
 output$top_f <- renderTable({
   b<- b()
-b <- b %>%  dplyr::filter(sexe=="2") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
-  head(b, n=10)
+b <- b %>%  dplyr::filter(sexe=="2") %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb) %>% dplyr::rename(Effectif=nb, Prenom=prenom)
+  head(b, 10)
 })
 
 
-
+#wordcloud
 output$wordcloud <-renderWordcloud2({
 b<- b()
 b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
 
  wordcloud2a(b, size=0.5, shape = "circle")
+
+})
+
+
+#plot popularite du prenom choisi
+output$plot_popularite <- plotly::renderPlotly({
+  prenom <-  stringr::str_to_upper(input$prenom_popularite)
+
+  df=base_nat %>%  dplyr::filter(prenom==!!prenom) %>%  dplyr::filter(prenom != "XXXX") %>% dplyr::rename(annee=annais)
+
+
+  g<-ggplot2::ggplot(data=df,ggplot2::aes(x=annee, y=nombre)) +
+   ggplot2:: geom_bar(stat="identity",  fill="khaki")  +
+    ggplot2::ggtitle("Nombre de prénoms donné par année") +
+    ggplot2::xlab("Années") +
+    ggplot2::ylab("Effectif")+
+    ggplot2::theme(plot.title = ggplot2::element_text(size=10)) +
+    ggplot2::scale_x_discrete(breaks=c("1900", "1925", "1950", "1975",  "2000"))
+
+  h<- plotly::ggplotly(g) %>% plotly::config(displayModeBar = F)
+
+  return(h)
+
 
 })
 
@@ -338,8 +353,8 @@ b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
 
 
       ### Creation du reseau relationnel uniquement si des prenoms proches ont été trouvées
-      if (length(liste[1])>0 & !(is.null(unlist(liste[1])))){
 
+      if (length(liste[1])>0 & !(is.null(unlist(liste[1])))){
 
       # necessite nodes (liste des noeuds) et links (liste des liens)
       source=rep(prenom, length(unlist(liste[1])))

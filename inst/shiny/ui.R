@@ -47,11 +47,20 @@ fluidRow(
     column(4,
          selectInput("wordcloud_origine",label="Origine",
                      choices=c(Choix='', levels(factor(colnames(table_dep)[c(-1,-2)]))), selectize=FALSE),
-         sliderInput("wordcloud_annees", label="Annees", min = 1900, max = 2018, value=c(1900,2018), sep="")
+         sliderInput("wordcloud_annees", label="Annees", min = 1900, max = 2018, value=c(1900,2018), sep=""),
+      br(),
+      br(),
+      br(),
+      br(),
+      br(),
+      br(),
+         textInput("prenom_popularite", label = "Choix prénom", value="Marc"),
+         plotly::plotlyOutput("plot_popularite", width="80%")
          ),
    column(8,
-         wordcloud2Output("wordcloud", width = "90%"),
-         fluidRow( column(6,tableOutput("top_h")),column(6,tableOutput("top_f")))
+         wordcloud2Output("wordcloud", width = "85%"),
+         br(),
+         fluidRow( column(1,),column(4,tableOutput("top_h")),column(4,tableOutput("top_f")))
    )
 
 
