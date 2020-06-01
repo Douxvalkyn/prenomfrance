@@ -21,7 +21,7 @@ navbarPage("",
 fluidRow(
   column(5,     selectInput(inputId="select_origine", label = "Origine",
           choices = levels(factor(colnames(table_dep)[c(-1,-2)])),  selected = 1)),
-  column(7,     sliderInput("year", "Année", 1900, 2018, value = 2018, step=1, animate=T, sep=))),
+  column(7,     sliderInput("year", "Année", 1900, 2018, value = 2018, step=1, animate=T, sep=""))),
 
 fluidRow(
        column(5, div(style = "font-size: 75%;",
@@ -47,7 +47,7 @@ fluidRow(
     column(4,
          selectInput("wordcloud_origine",label="Origine",
                      choices=c(Choix='', levels(factor(colnames(table_dep)[c(-1,-2)]))), selectize=FALSE),
-         sliderInput("wordcloud_annees", label="Annees", min = 1900, max = 2018, value=c(1900,2018))
+         sliderInput("wordcloud_annees", label="Annees", min = 1900, max = 2018, value=c(1900,2018), sep="")
          ),
    column(8,
          wordcloud2Output("wordcloud", width = "90%"),
@@ -61,9 +61,9 @@ fluidRow(
 
 tabPanel("Réseau",
          column(3,
-                textInput("prenom_graphe", label = "Choix prénom", value="tom"),
-                sliderInput("seuil_graphe", label="seuil de proximité", min=0, max=0.25,value=0.15, step=0.05),
-                sliderInput("annees_graphe", label="Années", min=1900, max=2018,value=c(1970,2018))
+                textInput("prenom_graphe", label = "Choix prénom", value="Kelly"),
+                sliderInput("seuil_graphe", label="Seuil de proximité", min=0, max=0.25,value=0.1, step=0.05),
+                sliderInput("annees_graphe", label="Années", min=1900, max=2018,value=c(1980,2018), sep="")
                 ),
          column(9,  visNetworkOutput("network", height = "750px",width="100%" ))
 )# fin tabpanel3

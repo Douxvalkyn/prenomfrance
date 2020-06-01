@@ -25,3 +25,19 @@
 #' @source \url{https://www.insee.fr/fr/statistiques/2540004}
 "nat2018_fichier_initial"
 
+
+#' @title base_dep
+#' @description base departementale Insee des prenoms
+#' @format A data frame with 3624994 rows and 6 variables:
+#' \describe{
+#'   \item{\code{sexe}}{int sexe}
+#'   \item{\code{prenom}}{chr prenom}
+#'   \item{\code{annais}}{factor annee de naissance}
+#'   \item{\code{dpt}}{factor departement de naissance}
+#'   \item{\code{nombre}}{int nombre de naissances avec ce prenom}
+#'   \item{\code{origine}}{ chr origine du prenom}
+
+#'}
+#' @source \url{https://www.insee.fr/fr/statistiques/2540004}
+"base_dep"
+

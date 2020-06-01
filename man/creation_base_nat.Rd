@@ -13,7 +13,7 @@ creation_base_nat(fichier_insee, fichier_prenoms)
 \item{fichier_prenoms}{base mondiale des prenoms}
 }
 \value{
-
+base nationale
 }
 \description{
 Creation de la base nationale à partir de la base mondiale des prenoms

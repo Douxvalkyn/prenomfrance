@@ -6,7 +6,7 @@
 #' @param fichier_insee fichier national insee des prenoms
 #' @param fichier_prenoms base mondiale des prenoms
 #'
-#' @return
+#' @return base nationale
 #' @export
 
 

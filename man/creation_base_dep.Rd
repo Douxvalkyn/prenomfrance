@@ -13,7 +13,7 @@ creation_base_dep(fichier_insee, fichier_prenoms)
 \item{fichier_prenoms}{base mondiale des prenoms}
 }
 \value{
-
+base departementale
 }
 \description{
 Creation de la base departementale à partir de la base mondiale des prenoms

@@ -285,7 +285,6 @@ b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
 
  # gestion ui dynamique (radio bouton 2)
     output$ui2 <- renderUI({
-        print(input$id)
       switch(
         input$radio2,
         "1" = plotly::plotlyOutput("plot", height="80%"),
@@ -369,37 +368,37 @@ b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
         values= append(values,base$nb[base$prenom==name])
        }
 
-      # recherche des origines  des noeuds: à revoir pour que si origine=arabic, african,
-      # les prenoms proches african ou arabic sont classés comme meme origine
+      # recherche des origines  des noeuds
       origines=NULL
       for (name in data$nodes$id){
-        if (is.na(base$origine[base$prenom==name])){
-          origines=append(origines,"NA")
-        } else{
-         origine_cible = stringr:: str_extract_all(base$origine[base$prenom==prenom], stringr::boundary("word")) %>%  unlist()
-         flag=FALSE
-         for (orig in origine_cible){
-         if ( ( stringr::str_detect(base$origine[base$prenom==name], orig)) & (!(flag)) ){
-           origines=append(origines, stringr::str_c(stringr::str_replace_na(origine_cible), collapse = " "))
-           flag=TRUE
-         }
-        }
-         if (!(flag)){ origines=append(origines, "autre origine")}
-        }
+        origines= append(origines,base$origine[base$prenom==name])
       }
 
-
+      # recherche du sexe  des noeuds (on choisit le sexe le plius représenté si prenom multi-sexe)
+    sexes=NULL
+    for (name in data$nodes$id){
+        b <- base_an %>%  dplyr::group_by(sexe, prenom) %>% dplyr::summarise(nb=sum(nombre)) %>%
+        dplyr::arrange(desc(nb), prenom, sexe)
+        sexes= append(sexes,first(b$sexe[b$prenom==name]))
+     }
+      sexes[sexes==1] <-"H"
+      sexes[sexes==2] <-"F"
 
       # on renseigne les valeurs, origines, titres des noeuds et longueur des liens
       data$nodes$value= values
-      data$nodes$group= origines
-      data$nodes$title=values
+      data$nodes$group= sexes
+      #data$nodes$title=values
+      data$nodes$title=paste0("Effectif: ", values, "<br>", "Origine: ", origines )
       data$edges$length=data$edges$weight
+      data$nodes$origine= origines
 
 
       #affichage dynamique
       visNetwork(nodes = data$nodes, edges = data$edges, height = "750px", width="100%") %>%
-        visLegend(width=0.2, position = "right")
+         visLegend(width=0.2, position = "right")   %>%
+        visGroups(groupname="H", color="dodgerblue") %>%
+        visGroups(groupname="F", color="pink")
+
       }
 }# If PRENOM EXISTE
     })

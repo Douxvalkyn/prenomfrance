@@ -1,27 +1,26 @@
 #' Version Wordcloud2a qui permet l'affichage simultané d'un autre plot sur la même page shiny
 #'
-#' @param data
-#' @param size
-#' @param minSize
-#' @param gridSize
-#' @param fontFamily
-#' @param fontWeight
-#' @param color
-#' @param backgroundColor
-#' @param minRotation
-#' @param maxRotation
-#' @param shuffle
-#' @param rotateRatio
-#' @param shape
-#' @param ellipticity
-#' @param widgetsize
-#' @param figPath
-#' @param hoverFunction
+#' @param data data
+#' @param size size
+#' @param minSize minSize
+#' @param gridSize gridSize
+#' @param fontFamily fontFamily
+#' @param fontWeight fontWeight
+#' @param color color
+#' @param backgroundColor backgroundColor
+#' @param minRotation minRotation
+#' @param maxRotation maxRotation
+#' @param shuffle shuffle
+#' @param rotateRatio rotateRatio
+#' @param shape shape
+#' @param ellipticity ellipticity
+#' @param widgetsize widgetsize
+#' @param figPath figPath
+#' @param hoverFunction hoverFunction
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return wordcloud2a
+
+
 wordcloud2a <- function (data, size = 1, minSize = 0, gridSize = 0, fontFamily = "Segoe UI",
                          fontWeight = "bold", color = "random-dark", backgroundColor = "white",
                          minRotation = -pi/4, maxRotation = pi/4, shuffle = TRUE,

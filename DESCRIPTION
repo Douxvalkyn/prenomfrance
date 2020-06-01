@@ -1,6 +1,6 @@
 Package: prenomfrance
 Title: Prenoms de France
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     c(person(given = "Régis",
              family = "Relland",
@@ -28,4 +28,7 @@ Imports:
     ggplot2,
     leaflet,
     visNetwork,
-    igraph
+    igraph,
+    base64enc,
+    htmlwidgets,
+    stringdist

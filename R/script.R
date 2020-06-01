@@ -1,5 +1,7 @@
 #
 # library(dplyr)
+# library(outils)
+
 # ####-------------- SAVE -----------------------------------------------------------
 # save(base_nat,file= "data/base_nat.rda") #base nationale
 # save(base_dep,file= "data/base_dep.rda") #base dep
@@ -23,11 +25,6 @@
 
 
 # ####----------- SCRIPT de calculs -------------------------------------------------------------
-
-
-
-
-
 
 
 
