@@ -58,7 +58,7 @@ fluidRow(
          plotly::plotlyOutput("plot_popularite", width="80%")
          ),
    column(8,
-         wordcloud2Output("wordcloud", width = "85%"),
+         wordcloud2::wordcloud2Output("wordcloud", width = "85%"),
          br(),
          fluidRow( column(1,),column(4,tableOutput("top_h")),column(4,tableOutput("top_f")))
    )
@@ -74,7 +74,7 @@ tabPanel("Réseau",
                 sliderInput("seuil_graphe", label="Seuil de proximité", min=0, max=0.25,value=0.15, step=0.05),
                 sliderInput("annees_graphe", label="Années", min=1900, max=2018,value=c(1980,2018), sep="")
                 ),
-         column(9,  visNetworkOutput("network", height = "750px",width="100%" ))
+         column(9,  visNetwork::visNetworkOutput("network", height = "750px",width="100%" ))
 )# fin tabpanel3
 
 

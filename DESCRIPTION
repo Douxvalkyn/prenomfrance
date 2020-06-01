@@ -31,4 +31,5 @@ Imports:
     igraph,
     base64enc,
     htmlwidgets,
-    stringdist
+    stringdist,
+    wordcloud2

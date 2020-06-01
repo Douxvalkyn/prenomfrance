@@ -121,7 +121,7 @@ output$mymap2 <- leaflet::renderLeaflet({
 
     map2 <- dplyr::left_join(map_dep_4326, tab, by="CODGEO")
 
-summary(base_an_ethnie$dpt)
+
     # attention si aucune valeur ou (une seule valeur et toutes les autres NA) : palette spéciale
     # sinon, discretisation JENKS
 
@@ -173,7 +173,7 @@ output$plot2 <- plotly::renderPlotly({
 
 annees <- unique(base_nat$annais) %>%  as.vector %>% unlist() %>%  sort()
 annees <- annees[annees != "XXXX"]
-print(9)
+
 result=NULL
 i=1
 for (an in annees){
@@ -184,7 +184,7 @@ for (an in annees){
 result[i] <- length(h2[h2<90])
 i=i+1
 }
-print(10)
+
 
 concentration <- cbind(annees, result) %>%  as.data.frame()
 concentration$result <-as.numeric(as.vector(concentration$result))
@@ -198,7 +198,6 @@ g <- ggplot2::ggplot(concentration, ggplot2::aes(x=annees))+
   ggplot2::scale_x_discrete(breaks=c("1900", "1925", "1950", "1975",  "2000")) +
   ggplot2::theme(plot.title = ggplot2::element_text(size=10))
 
-print(11)
 h <- plotly::ggplotly(g) %>% plotly::config(displayModeBar = F) # pour cacher la barre de menu plotly
 
 return (h)
@@ -310,7 +309,7 @@ output$plot_popularite <- plotly::renderPlotly({
 
 ####---------------------- Graphe relationnel -------------------------------------------
 
-   output$network <- renderVisNetwork({
+   output$network <- visNetwork::renderVisNetwork({
 
      req(input$prenom_graphe)
 
@@ -375,7 +374,7 @@ output$plot_popularite <- plotly::renderPlotly({
 
 
       # utilisation de VisNetwork pour afficher un graphe dynamique interactif
-      data <- toVisNetworkData(reseau)
+      data <- visNetwork::toVisNetworkData(reseau)
 
       # recherche des valeurs (nb d'occurences des prenoms) des noeuds
       values=NULL
@@ -402,17 +401,16 @@ output$plot_popularite <- plotly::renderPlotly({
       # on renseigne les valeurs, origines, titres des noeuds et longueur des liens
       data$nodes$value= values
       data$nodes$group= sexes
-      #data$nodes$title=values
       data$nodes$title=paste0("Effectif: ", values, "<br>", "Origine: ", origines )
       data$edges$length=data$edges$weight
       data$nodes$origine= origines
 
 
       #affichage dynamique
-      visNetwork(nodes = data$nodes, edges = data$edges, height = "750px", width="100%") %>%
-         visLegend(width=0.2, position = "right")   %>%
-        visGroups(groupname="H", color="dodgerblue") %>%
-        visGroups(groupname="F", color="pink")
+    visNetwork::visNetwork(nodes = data$nodes, edges = data$edges, height = "750px", width="100%") %>%
+      visNetwork::visLegend(width=0.2, position = "right")   %>%
+      visNetwork::visGroups(groupname="H", color="dodgerblue") %>%
+      visNetwork::visGroups(groupname="F", color="pink")
 
       }
 }# If PRENOM EXISTE
