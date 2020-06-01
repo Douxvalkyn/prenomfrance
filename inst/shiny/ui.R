@@ -70,8 +70,8 @@ fluidRow(
 
 tabPanel("Réseau",
          column(3,
-                textInput("prenom_graphe", label = "Choix prénom", value="Kelly"),
-                sliderInput("seuil_graphe", label="Seuil de proximité", min=0, max=0.25,value=0.1, step=0.05),
+                textInput("prenom_graphe", label = "Choix prénom", value="Joseph"),
+                sliderInput("seuil_graphe", label="Seuil de proximité", min=0, max=0.25,value=0.15, step=0.05),
                 sliderInput("annees_graphe", label="Années", min=1900, max=2018,value=c(1980,2018), sep="")
                 ),
          column(9,  visNetworkOutput("network", height = "750px",width="100%" ))

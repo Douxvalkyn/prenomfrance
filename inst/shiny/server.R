@@ -61,7 +61,7 @@ output$mymap <- leaflet::renderLeaflet({
         pal <- leaflet::colorBin("YlOrRd", domain =  map$ethnie, bins = c(0,1))  }
       if ( length(na.omit(map$ethnie[map$ethnie!=0])) != 0) {
 
-      classes<-classInt::classIntervals(na.omit(map$ethnie), 5, style="jenks")
+    suppressWarnings( classes<-classInt::classIntervals(na.omit(map$ethnie), 5, style="jenks") )
       pal <- leaflet::colorBin("YlOrRd", domain =  map$ethnie, bins = unique(classes$brks))
       }
 
