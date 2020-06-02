@@ -7,7 +7,7 @@
 #' @param fichier_prenoms base mondiale des prenoms
 #'
 #' @return base nationale
-#' @export
+
 
 
 creation_base_nat = function(fichier_insee, fichier_prenoms){
@@ -16,7 +16,7 @@ creation_base_nat = function(fichier_insee, fichier_prenoms){
   base_nat <- fichier_insee %>%  dplyr::left_join(fichier_prenoms, by="prenom")
 
   #pour connaitre les lignes en NA (optionnel)
-  base_ordonnee <- dplyr::arrange(base_nat, desc(nombre))
+  base_ordonnee <- dplyr::arrange(base_nat, dplyr::desc(nombre))
   base_ordonnee_na <- base_ordonnee[is.na(base_ordonnee$origine),]
   base_ordonnee_na <-dplyr::filter(base_ordonnee_na, prenom != "_PRENOMS_RARES" & annais != "XXXX") %>%
     dplyr::group_by(prenom) %>%  dplyr::summarise(sum(nombre))

@@ -18,6 +18,8 @@
 #' @param figPath figPath
 #' @param hoverFunction hoverFunction
 #'
+#' @export
+#'
 #' @return wordcloud2a
 
 

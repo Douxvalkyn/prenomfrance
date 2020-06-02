@@ -257,7 +257,7 @@ output$wordcloud <-renderWordcloud2({
 b<- b()
 b <- b %>%  dplyr::ungroup() %>% dplyr::select(prenom, nb)
 
- wordcloud2a(b, size=0.5, shape = "circle")
+ prenomfrance::wordcloud2a(b, size=0.5, shape = "circle")
 
 })
 
@@ -393,7 +393,7 @@ output$plot_popularite <- plotly::renderPlotly({
     for (name in data$nodes$id){
         b <- base_an %>%  dplyr::group_by(sexe, prenom) %>% dplyr::summarise(nb=sum(nombre)) %>%
         dplyr::arrange(desc(nb), prenom, sexe)
-        sexes= append(sexes,first(b$sexe[b$prenom==name]))
+        sexes= append(sexes, dplyr::first(b$sexe[b$prenom==name]))
      }
       sexes[sexes==1] <-"H"
       sexes[sexes==2] <-"F"

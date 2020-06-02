@@ -10,6 +10,46 @@ A data frame with 11781 rows and 43 variables:
 \item{\code{annee}}{factor annee}
 \item{\code{dep}}{factor departement}
 \item{\code{spanish}}{factor proportion de prenoms espagnol par departement}
+\item{\code{african}}{factor proportion de prenoms african par departement}
+\item{\code{arabic}}{factor proportion de prenoms arabic par departement}
+\item{\code{basque}}{factor proportion de prenoms basque par departement}
+\item{\code{breton}}{factor proportion de prenoms breton par departement}
+\item{\code{bulgarian}}{factor proportion de prenoms bulgarian par departement}
+\item{\code{catalan}}{factor proportion de prenoms catalan par departement}
+\item{\code{celtic}}{factor proportion de prenoms celtic par departement}
+\item{\code{croatian}}{factor proportion de prenoms croatian par departement}
+\item{\code{czech}}{factor proportion de prenoms czech par departement}
+\item{\code{danish}}{factor proportion de prenoms danish par departement}
+\item{\code{dutch}}{factor proportion de prenoms dutch par departement}
+\item{\code{english}}{factor proportion de prenoms english par departement }
+\item{\code{finnish}}{factor proportion de prenoms finnish par departement}
+\item{\code{french}}{factor proportion de prenoms french }
+\item{\code{german}}{factor proportion de prenoms german par departement}
+\item{\code{greek}}{factor proportion de prenoms greek par departement}
+\item{\code{hungarian}}{factor proportion de prenoms hungarian par departement}
+\item{\code{icelandic}}{factor proportion de prenoms icelandic par departement}
+\item{\code{indian}}{factor proportion de prenoms indian par departement}
+\item{\code{irish}}{factor proportion de prenoms irish }
+\item{\code{italian}}{factor proportion de prenoms italian }
+\item{\code{japanese}}{factor proportion de prenoms japanese par departement}
+\item{\code{jewish}}{factor proportion de prenoms jewish par departement}
+\item{\code{macedonian}}{factor proportion de prenoms macedonian par departement}
+\item{\code{norwegian}}{factor proportion de prenoms norwegian par departement}
+\item{\code{persian}}{factor proportion de prenoms persian par departement}
+\item{\code{polish}}{factor proportion de prenoms polish par departement}
+\item{\code{portuguese}}{factor proportion de prenoms portuguese par departement}
+\item{\code{provençal}}{factor proportion de prenoms provençal par departement}
+\item{\code{romanian}}{factor proportion de prenoms romanian par departement}
+\item{\code{russian}}{factor proportion de prenoms russian par departement}
+\item{\code{scandinavian}}{factor proportion de prenoms scandinavian par departement}
+\item{\code{scottish}}{factor proportion de prenoms scottish par departement}
+\item{\code{serbian}}{factor proportion de prenoms serbian par departement}
+\item{\code{slovak}}{factor proportion de prenoms slovak par departement}
+\item{\code{slovene}}{factor proportion de prenoms slovene par departement}
+\item{\code{swedish}}{factor proportion de prenoms swedish par departement}
+\item{\code{turkish}}{factor proportion de prenoms turkish par departement}
+\item{\code{ukrainian}}{factor proportion de prenoms ukrainian par departement}
+\item{\code{welsh}}{factor proportion de prenoms welsh par departement}
 }
 }
 \source{

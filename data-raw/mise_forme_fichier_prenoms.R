@@ -5,7 +5,6 @@
 #' @param fichier_prenoms base de données mondiale provenant du site behind the name
 #'
 #' @return dataframe mis en forme pour jointure avec fichier insee des prenoms
-#' @export
 #'
 
 mise_forme_fichier_prenoms = function (fichier_prenoms){
@@ -29,7 +28,7 @@ mise_forme_fichier_prenoms = function (fichier_prenoms){
   prenoms <-prenoms[!(is.na(prenoms$prenom)),]
 
   # grouper les lignes qui concernent les mêmes prenoms
-  prenoms <- aggregate(origine~prenom, data = prenoms, paste0, collapse=" ")
+  prenoms <- stats::aggregate(origine~prenom, data = prenoms, paste0, collapse=" ")
 
   # supprimer les virgules dans la colonne origine
   prenoms$origine  <- stringr::str_replace_all(prenoms$origine, ",", " ")

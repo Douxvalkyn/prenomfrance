@@ -27,8 +27,8 @@ recherche_prenoms_proches <- function(prenom,seuil_graphe,prenoms_all ){
       }
       j=j+1
     }
-    prenoms_proches=na.omit(prenoms_proches)
-    distances=na.omit(distances)
+    prenoms_proches=stats::na.omit(prenoms_proches)
+    distances=stats::na.omit(distances)
     nb_prenoms_proches=length(unlist(prenoms_proches))
 
 

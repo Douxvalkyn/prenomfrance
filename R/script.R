@@ -2,12 +2,14 @@
 # library(dplyr)
 # library(outils)
 
+#   devtools::check()
+
 # ####-------------- SAVE -----------------------------------------------------------
 # save(base_nat,file= "data/base_nat.rda") #base nationale
 # save(base_dep,file= "data/base_dep.rda") #base dep
 # save(table_nat,file= "data/table_nat.rda") #taux nationaux
 # save(table_dep,file= "data/table_dep.rda") #taux dep
-
+#save(prenoms_fichier_initial, file="data/prenoms_fichier_initial.rda")
 
 
 # ####----------- LOAD DATA -------------------------------------------------------------
@@ -25,8 +27,13 @@
 
 
 # ####----------- SCRIPT de calculs -------------------------------------------------------------
-
-
+#
+# Encoding(levels(prenoms_fichier_initial$X01_prenom)) <- "latin1"
+# levels(prenoms_fichier_initial$X01_prenom) <- iconv(
+#   levels(prenoms_fichier_initial$X01_prenom),
+#   "latin1",
+#   "UTF-8"
+# )
 
 
 

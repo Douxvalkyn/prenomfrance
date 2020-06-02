@@ -7,10 +7,10 @@
 \format{
 A data frame with 11627 rows and 4 variables:
 \describe{
-\item{\code{prenom}}{factor prenom}
-\item{\code{genre}}{factor sexe}
-\item{\code{langage}}{factor origine}
-\item{\code{frequence}}{num frequence par million}
+\item{\code{X01_prenom}}{factor prenom}
+\item{\code{X02_genre}}{factor sexe}
+\item{\code{X03_langage}}{factor origine}
+\item{\code{X04_fréquence}}{num frequence par million}
 }
 }
 \source{

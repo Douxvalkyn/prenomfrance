@@ -7,7 +7,7 @@
 #' @param fichier_prenoms base mondiale des prenoms
 #'
 #' @return base departementale
-#' @export
+
 
 
 creation_base_dep = function(fichier_insee, fichier_prenoms){
