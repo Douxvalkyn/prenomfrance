@@ -3,6 +3,10 @@ output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+```{r}
+library(shiny)
+```
+
 
 Le package **prenomfrance** améliore la connaissance de la démographie française à partir de ses prénoms.
 A partir des bases de prenoms *Insee* actualisées chaque année, ainsi que de la base de données du site *Behind The name*, ce package fournit des outils de visualisation sur les statistiques des prénoms donnés aux enfants.

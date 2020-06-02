@@ -1,6 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+``` r
+library(shiny)
+```
+
+    ## Warning: package 'shiny' was built under R version 3.6.3
+
 Le package **prenomfrance** améliore la connaissance de la démographie
 française à partir de ses prénoms. A partir des bases de prenoms *Insee*
 actualisées chaque année, ainsi que de la base de données du site
